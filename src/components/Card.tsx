@@ -1,4 +1,3 @@
-import { EyeOff, Laugh, ThumbsUp } from "lucide-react";
 import { TCardInfo } from "../pages/SetupPage";
 import { useState } from "react";
 
@@ -27,11 +26,20 @@ export default function Card({
 			<div>
 				{reveal ? (
 					<div className="flex flex-col items-center justify-center gap-2">
-						<div>{cardInfo.value}</div>
-						{cardInfo.bad ? <Laugh color="#ff4a4a" /> : <ThumbsUp color="green" />}
+						{cardInfo.bad ? (
+							<>
+								<p className="text-red-500">{cardInfo.value}</p>
+								<img src="/clown.webp" className="w-[34px]" />
+							</>
+						) : (
+							<>
+								<p className="text-green-500">{cardInfo.value}</p>
+								<img src="/superhero.webp" className="w-[34px]" />
+							</>
+						)}
 					</div>
 				) : (
-					<EyeOff size={35} color="gray" />
+					<img src="/close-eye.webp" className="w-[34px]" />
 				)}
 			</div>
 		</button>

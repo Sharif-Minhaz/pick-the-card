@@ -3,6 +3,7 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { TCardInfo } from "./SetupPage";
 import Card from "../components/Card";
 import ResultModal from "../components/ResultModal";
+import Table from "../components/Table";
 
 export interface Player {
 	name: string;
@@ -23,8 +24,16 @@ export default function GamePage() {
 		player1: [],
 		player2: [],
 	});
+	const [allCards, setAllCards] = useState<Player[]>([]);
 
 	const info = readLocalStorageData();
+	// Function to generate a random number between 0 and 1
+	const getRandomNumber = () => Math.random() - 0.5;
+
+	useEffect(() => {
+		setAllCards(info.cards?.sort(getRandomNumber));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const isPlayer1Turn = turn % 2 === 1;
 
@@ -40,67 +49,44 @@ export default function GamePage() {
 
 	useEffect(() => {
 		let timeOutId = 0;
-		if (info.cards.length === turn - 1) {
+		if (allCards.length === turn - 1) {
 			timeOutId = setTimeout(() => {
 				setShowResult(true);
-			}, 1100);
+			}, 500);
 		}
 
 		return () => {
 			clearTimeout(timeOutId);
 		};
-	}, [turn, info.cards.length]);
+	}, [turn, allCards.length]);
 
 	return (
 		<section>
-			<div className="relative">
-				<div
-					className={`${
-						isPlayer1Turn ? "text-blue-500" : "text-green-500"
-					} text-center py-3 text-2xl font-semibold border-b border-slate-200 shadow-sm bg-white`}
-				>
-					{info.cards.length === turn - 1 ? (
-						<div className="text-red-500">Game Over</div>
-					) : (
-						<div>{isPlayer1Turn ? info.player1 : info.player2}'s turn.</div>
-					)}
-				</div>
+			<div
+				className={`${
+					isPlayer1Turn ? "text-blue-500" : "text-green-500"
+				} text-center py-3 text-2xl font-semibold border-b border-slate-200 shadow-sm bg-white`}
+			>
+				{allCards.length === turn - 1 ? (
+					<div className="text-red-500">Game Over</div>
+				) : (
+					<div>{isPlayer1Turn ? info.player1 : info.player2}'s turn.</div>
+				)}
 			</div>
 
 			<div className="grid grid-cols-3 gap-3 p-3">
-				{info.cards?.map((cardInfo: TCardInfo) => (
+				{allCards?.map((cardInfo: TCardInfo) => (
 					<Card key={cardInfo.name} handleChoose={handleChoose} cardInfo={cardInfo} />
 				))}
 			</div>
 
 			{/* result */}
+			<Table allCards={allCards} info={info} result={result} />
 
-			<div className="p-3">
-				<table className="w-full">
-					<tbody>
-						<tr className="border">
-							<th className="border-r">SN.</th>
-							<th className="border-r">{info.player1}</th>
-							<th className="px-2 py-1">{info.player2}</th>
-						</tr>
-						{Array.from({ length: info.cards.length / 2 }, (_, index) => index).map(
-							(_, index: number) => (
-								<tr key={index} className="border">
-									<td className="px-2 py-1 border-r">{index + 1}</td>
-									<td className="px-2 py-1 border-r">
-										{result.player1[index]?.value}
-									</td>
-									<td className="px-2 py-1 border-r">
-										{result.player2[index]?.value}
-									</td>
-								</tr>
-							)
-						)}
-					</tbody>
-				</table>
-			</div>
 			{showResult && (
-				<ResultModal result={result} player1={info.player1} player2={info.player2} />
+				<ResultModal result={result} player1={info.player1} player2={info.player2}>
+					<Table allCards={allCards} info={info} result={result} />
+				</ResultModal>
 			)}
 		</section>
 	);

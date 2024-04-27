@@ -1,6 +1,6 @@
 import { TCardInfo } from "../src/pages/SetupPage";
 
-type TData = {
+export type TData = {
 	player1: string;
 	player2: string;
 	cardsNumber: number;

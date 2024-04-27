@@ -27,6 +27,8 @@ export default function SetupPage() {
 			  ],
 	});
 
+	console.log(form);
+
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 	};
@@ -53,7 +55,7 @@ export default function SetupPage() {
 			} else {
 				return {
 					...prev,
-					cardsNumber: prev.cards + value,
+					cardsNumber: prev.cards?.length + value,
 					cards: [...prev.cards.slice(0, value)],
 				};
 			}
@@ -160,16 +162,16 @@ export default function SetupPage() {
 						</div>
 					))}
 				</div>
-				<div className="mt-5 flex gap-3">
+				<div className="mt-5 flex flex-col sm:flex-row gap-3">
 					<button
 						type="submit"
-						className="uppercase items-center flex gap-1.5 bg-blue-500 text-white px-6 font-semibold py-2 rounded-full hover:bg-blue-600"
+						className="w-min whitespace-nowrap uppercase items-center flex gap-1.5 bg-blue-500 text-white px-6 font-semibold py-2 rounded-full hover:bg-blue-600"
 					>
 						<Swords size={19} /> Save & Play
 					</button>
 					<button
 						onClick={() => navigate(-1)}
-						className="uppercase items-center flex gap-1.5 bg-purple-500 text-white px-6 font-semibold py-2 rounded-full hover:bg-purple-600"
+						className="w-min whitespace-nowrap uppercase items-center flex gap-1.5 bg-purple-500 text-white px-6 font-semibold py-2 rounded-full hover:bg-purple-600"
 					>
 						<Undo2 size={19} /> Go back
 					</button>
